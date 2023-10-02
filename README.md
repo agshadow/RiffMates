@@ -7,19 +7,21 @@ Create Virtual Environment
 > or (windows)
 > ./venv/Scripts/activate
 
+clone the repository
+git clone <repository URL>
+
 install django
 (venv) python -m pip instal django
 
-Start your project:
-inside your RiffMates directory:
-(venv) django-admin startproject RiffMates .
+Note if theres is a requirements.txt, install requirements.txt
+pip install -r requirements.txt
+
+To generate the requirements.txt
+Pip freeze > requirements.txt
 
 run the server
 (venv) python manage.py runserver
 
-create your first app (home)
-(venv) RiffMates$ python manage.py startapp home
-
-up to page 45
+up to page 52
 
 -
