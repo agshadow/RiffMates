@@ -1,0 +1,17 @@
+<!-- RiffMates/templates/musican.html -->
+{% extends "base.html" %} 
+{% block title %} {{block.super}}: Musician Details {% endblock %}
+{% block content %}
+<h1 class="text-dark">Musician Details</h1>
+<table style="width:100%" >
+  <tr >
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Date of Birth</th>
+  </tr>
+  <tr style='background-color:{% cycle 'LightGray' 'SeaShell' %}' >
+    <td>{{musician.first_name}}</td><td>{{musician.last_name}}</td><td>{{musician.birth}}</td>
+  </tr>
+  </table>
+</ul>
+{% endblock content %}

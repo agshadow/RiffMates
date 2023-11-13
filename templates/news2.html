@@ -1,0 +1,10 @@
+<!-- RiffMates/templates/news2.html -->
+{% extends "base.html" %} {% block title %} {{block.super}}: News {% endblock %}
+{% block content %}
+<h1 class="text-dark">RiffMates News (2)</h1>
+<ul>
+  {% for item in news %}
+  <li class="text-secondary">{{ item }}</li>
+  {% endfor %}
+</ul>
+{% endblock content %}

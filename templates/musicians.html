@@ -1,0 +1,43 @@
+<!-- RiffMates/templates/musicans.html -->
+{% extends "base.html" %} 
+{% block title %} {{block.super}}: Musicians {% endblock %}
+{% block content %}
+<h1 class="text-dark">Musicians</h1>
+<table style="width:100%" >
+  <tr style='background-color:white'>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Date of Birth</th>
+  </tr>
+  {% for item in musicians %}
+  <tr style='background-color:{% cycle 'LightGray' 'SeaShell' %}' >
+    <td><a href="{% url 'musician'  item.id %}">{{item.first_name}}</td><td>{{item.last_name}}</td></a><td>{{item.birth}}</td>
+  </tr>
+  {% empty %}
+  <tr style='background-color:{% cycle 'LightGreen' 'LightSalmon' %}' >
+    <td>No musicians in the database</td><td></td><td>}</td>
+  </tr>
+  {% endfor %}
+  </table>
+  {% if page.has_other_pages %}
+    {% if page.has_previous %}
+      <a href = "{% url 'musicians' %}?page={{page.previous_page_number}}">
+        Prev
+      </a> &nbsp;&nbsp;&nbsp;
+    {% else %}
+      Prev
+    {% endif %}
+     | 
+    {% if page.has_next %}
+      <a href = "{% url 'musicians' %}?page={{page.next_page_number}}">
+        Next
+      </a> &nbsp;&nbsp;&nbsp;
+    {% else %}
+    Next
+    {% endif %}
+  {% else %}
+    Prev | Next
+  {% endif %}
+    | Page {{page_tracker.current}} of {{page_tracker.total}}
+    
+{% endblock content %}

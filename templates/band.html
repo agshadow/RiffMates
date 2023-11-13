@@ -1,0 +1,22 @@
+<!-- RiffMates/templates/band.html -->
+{% extends "base.html" %} 
+{% block title %} {{block.super}}: Musician Details {% endblock %}
+{% block content %}
+<h1 class="text-dark">Band Details</h1>
+Band Name - {{band.name}}
+<BR>
+Members:
+<table style="width:100%" >
+  <tr >
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Date of Birth</th>
+  </tr>
+  {% for mus in band.musicians.all %}
+  <tr style='background-color:{% cycle 'LightGray' 'SeaShell' %}' >
+    <td>{{mus.first_name}}</td><td>{{mus.last_name}}</td><td>{{mus.birth}}</td>
+  </tr>
+  {% endfor %}
+  </table>
+</ul>
+{% endblock content %}

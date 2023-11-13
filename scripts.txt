@@ -1,0 +1,26 @@
+python manage.py shell
+
+
+with open('bands.json', 'rb') as f:
+    data = f.read()
+newdata = open('bandsutf8.json', 'wb')
+newdata.write(data)
+newdata.close()
+exit()
+
+
+del db.sqlite3
+copy db.sqlite3.bak db.sqlite3
+del bands.json
+python manage.py dumpdata bands > bands.json
+del db.sqlite3
+python manage.py migrate
+python manage.py loaddata bands.json
+
+
+[12/Nov/2023 08:38:19] "GET /bands/bands/ HTTP/1.1" 200 1426
+{'musicians': <QuerySet [<Musician: Musician(id=3, last_name=Bonham)
+>, <Musician: Musician(id=2, last_name=Lennon)
+>, <Musician: Musician(id=1, last_name=Vai)
+>]>, 'page': <Page 1 of 1>}
+musicians

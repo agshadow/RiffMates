@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock title %}</title>
+    {% load bootstrap5 %} {% bootstrap_css %} {% bootstrap_javascript %}
+    <style>
+      div {
+        padding-top: 10px;
+        padding-right: 10px;
+        padding-bottom: 10px;
+        padding-left: 10px;
+      }
+      th, td {
+        padding-top: 10px;
+        padding-bottom: 20px;
+        padding-left: 30px;
+        padding-right: 40px;
+      }
+      </style>
+  </head>
+  <body>
+    <table>
+      <TR>
+        <TD><a href={% url 'home' %}>Home</a></TD>
+        <TD><a href={% url 'musicians' %}>Musicians</a></TD>
+        <TD><a href={% url 'bands' %}>Bands</a></TD>
+        <TD><a href={% url 'news_advanced' %}>News</a></TD>
+      </TR>
+    </table>
+    <HR>
+
+      {% block content %} {% endblock content %}
+    </div>
+  </body>
+</html>
