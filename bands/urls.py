@@ -7,4 +7,5 @@ urlpatterns = [
     path("musicians/", views.musicians, name="musicians"),
     path("bands/", views.bands, name="bands"),
     path("band/<int:band_id>/", views.band, name="band"),
+    path("venues/", views.venues, name="venues"),
 ]

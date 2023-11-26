@@ -1,0 +1,43 @@
+<!-- RiffMates/templates/bands.html -->
+{% extends "base.html" %} {% block title %} {{block.super}}: Venues Details
+{%endblock %} {% block content %}
+<h1 class="text-dark">Venues Details</h1>
+<table style="width:100%" >
+  <tr >
+    <th>Venue Name</th>
+    <th>Room</th>
+  </tr>
+  {% for venue in venues %}
+  <tr style='background-color:{% cycle 'LightGray' 'SeaShell' %}' >
+    <td>{{venue.name}}</a></td>
+    <td>{% for room in venue.room_set.all %}{{room.name}}<BR>{%empty%} - <BR>{% endfor%}</td>
+  </tr>
+  {% empty %}
+  <tr style='background-color:{% cycle 'LightGreen' 'SeaShell' %}' >
+    <td>No Venues</td><td></td><td>}</td>
+  </tr>
+  {% endfor %}
+  </table>
+
+  {% if page.has_other_pages %}
+    {% if page.has_previous %}
+      <a href = "{% url 'venues' %}?page={{page.previous_page_number}}">
+        Prev
+      </a> &nbsp;&nbsp;&nbsp;
+    {% else %}
+        Prev
+    {% endif %}
+    | 
+    {% if page.has_next %}
+      <a href = "{% url 'venues' %}?page={{page.next_page_number}}">
+        Next
+      </a> &nbsp;&nbsp;&nbsp;
+      {% else %}
+      Next
+    {% endif %}
+  {% else %}
+  Prev | Next
+  {% endif %}
+  | Page {{page_tracker.current}} of {{page_tracker.total}}
+
+{%endblock content %}

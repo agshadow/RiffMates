@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
-from bands.models import Musician, Band
+from bands.models import Musician, Band, Venue
 from collections import namedtuple
 
 
@@ -26,14 +26,56 @@ def band(request, band_id):
     return render(request, "band.html", data)
 
 
-def bands(request):
-    all_bands = Band.objects.all().order_by("name")
-    for i in all_bands:
-        print(i.name)
-        print("all bands = ", i.musicians.all().order_by("last_name"))
+def venues(request):
+    all_venues = Venue.objects.all().order_by("name")
 
     # set up paginator
-    paginator = Paginator(all_bands, 5)  # 5 items per page
+    page_data = get_paginator(all_venues, request, 3)
+    (page, page_tracker) = page_data
+
+    # return data
+    data = {
+        "venues": page.object_list,
+        "page": page,
+        "page_tracker": page_tracker,
+    }
+    return render(request, "venues.html", data)
+
+
+def bands(request):
+    all_bands = Band.objects.all().order_by("name")
+
+    # set up paginator
+    page_data = get_paginator(all_bands, request, 3)
+    (page, page_tracker) = page_data
+
+    data = {
+        "bands": page.object_list,
+        "page": page,
+        "page_tracker": page_tracker,
+    }
+    print(data)
+    return render(request, "bands.html", data)
+
+
+def musicians(request):
+    all_musicians = Musician.objects.all().order_by("last_name")
+
+    # set up paginator
+    page_data = get_paginator(all_musicians, request, 3)
+    (page, page_tracker) = page_data
+
+    data = {
+        "musicians": page.object_list,
+        "page": page,
+        "page_tracker": page_tracker,
+    }
+    return render(request, "musicians.html", data)
+
+
+def get_paginator(all_objects, request, items_per_page):
+    # set up paginator
+    paginator = Paginator(all_objects, items_per_page)  # 5 items per page
 
     # take page number from request if it exists into page_num as a integer
     page_num = request.GET.get("page", 1)  # defaults to 1 if none exist
@@ -48,37 +90,4 @@ def bands(request):
     # get the page from the pagnator
     page = paginator.page(page_num)
     page_tracker = Page_tracker(page_num, paginator.num_pages)
-
-    data = {
-        "bands": page.object_list,
-        "page": page,
-        "page_tracker": page_tracker,
-    }
-    print(data)
-    return render(request, "bands.html", data)
-
-
-def musicians(request):
-    all_musicians = Musician.objects.all().order_by("last_name")
-    paginator = Paginator(all_musicians, 5)  # 5 items per page
-
-    page_num = request.GET.get("page", 1)  # defaults to 1 if none exist
-    page_num = int(page_num)  # convert into integer
-
-    if page_num < 1:
-        page_num = 1
-    elif page_num > paginator.num_pages:
-        page_num = paginator.num_pages
-
-    page = paginator.page(page_num)
-    page_tracker = Page_tracker(page_num, paginator.num_pages)
-
-    data = {
-        "musicians": page.object_list,
-        "page": page,
-        "page_tracker": page_tracker,
-    }
-    print(data)
-    print("musicians")
-
-    return render(request, "musicians.html", data)
+    return (page, page_tracker)
