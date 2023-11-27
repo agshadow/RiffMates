@@ -9,12 +9,20 @@ class Musician(models.Model):
     def __str__(self):
         return f"Musician(id={self.id}, last_name={self.last_name})\n"
 
+    class Meta:
+        ordering = ["last_name", "first_name"]
+
 
 class Venue(models.Model):
     name = models.CharField(max_length=20)
 
     def __str__(self):
         return f"Venue(id={self.id}, name={self.name})"
+
+    class Meta:
+        ordering = [
+            "name",
+        ]
 
 
 class Room(models.Model):
@@ -23,6 +31,11 @@ class Room(models.Model):
 
     def __str__(self):
         return f"Room(id={self.id}, name={self.name})"
+
+    class Meta:
+        ordering = [
+            "name",
+        ]
 
 
 class Band(models.Model):
@@ -34,3 +47,14 @@ class Band(models.Model):
         for i in self.musicians.all():
             data += f"{i}"
         return data
+
+    """
+    class meta:
+        unique_together = [["name","venue"]]
+        # alternate short-cut version as there is only one "uniqueness"
+        # unique_together = ["name", "venue"]"""
+
+    class Meta:
+        ordering = [
+            "name",
+        ]
