@@ -4,8 +4,10 @@ from django.contrib import admin
 
 from django.contrib import admin
 
-from bands.models import Musician
+from bands.models import Musician, Band
 from datetime import datetime, date
+from django.utils.html import format_html
+from django.urls import reverse
 
 
 class DecadeListFilter(admin.SimpleListFilter):
@@ -36,7 +38,14 @@ class DecadeListFilter(admin.SimpleListFilter):
 
 @admin.register(Musician)
 class MusicianAdmin(admin.ModelAdmin):
-    list_display = ("id", "last_name", "first_name", "birth", "show_weekday")
+    list_display = (
+        "id",
+        "last_name",
+        "first_name",
+        "birth",
+        "show_weekday",
+        "show_bands",
+    )
     list_filter = (DecadeListFilter,)
     search_fields = (
         "last_name",
@@ -47,3 +56,24 @@ class MusicianAdmin(admin.ModelAdmin):
         return obj.birth.strftime("%A")
 
     show_weekday.short_description = "Birth Weekday"
+
+    def show_bands(self, obj):
+        bands = obj.band_set.all()
+        if len(bands) == 0:
+            return format_html("<i>None</i>")
+
+        plural = ""
+        if len(bands) > 1:
+            plural = "s"
+
+        parm = "?id__in=" + ",".join([str(b.id) for b in bands])
+        url = reverse("admin:bands_band_changelist") + parm
+        print(url)
+        return format_html('<a href="{}">Band{}</a>', url, plural)
+
+    show_bands.short_descriptions = "Bands"
+
+
+@admin.register(Band)
+class BandAdmin(admin.ModelAdmin):
+    pass
