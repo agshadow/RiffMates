@@ -4,7 +4,7 @@ from django.contrib import admin
 
 from django.contrib import admin
 
-from bands.models import Musician, Band
+from bands.models import Musician, Band, Venue, Room
 from datetime import datetime, date
 from django.utils.html import format_html
 from django.urls import reverse
@@ -76,6 +76,55 @@ class MusicianAdmin(admin.ModelAdmin):
 
 @admin.register(Band)
 class BandAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+    )
+    # list_filter = (DecadeListFilter,)
+    search_fields = ("name",)
+
+
+@admin.register(Venue)
+class VenueAdmin(admin.ModelAdmin):
+    list_display = ("id", "show_venue_name", "show_rooms")
+    # list_filter = (DecadeListFilter,)
+    search_fields = ("name",)
+
+    def show_rooms(self, obj):
+        rooms = obj.room_set.all()
+        if len(rooms) == 0:
+            return format_html("<i>None</i>")
+        html_rooms = ""
+
+        for r in rooms:
+            print(obj.name)
+            parm = "?id__in=" + str(r.id)
+            url = reverse("admin:bands_room_changelist") + parm
+
+            print(url)
+            html_rooms += "<li><a href='" + url + "'>" + r.name + "</a>"
+            print(html_rooms)
+
+        return format_html(html_rooms)
+
+    show_rooms.short_description = "Rooms"
+
+    def show_venue_name(self, obj):
+        rooms = obj.room_set.all()
+        if len(rooms) == 0:
+            return format_html(obj.name)
+
+        parm = "?id__in=" + ",".join([str(r.id) for r in rooms])
+        url = reverse("admin:bands_room_changelist") + parm
+        print(f"URL: {url}")
+
+        return format_html("<a href = '{}'>" + obj.name + "</a>", url)
+
+    show_venue_name.short_description = "Venue Name"
+
+
+@admin.register(Room)
+class RoomAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "name",
