@@ -22,6 +22,6 @@ Pip freeze > requirements.txt
 run the server
 (venv) python manage.py runserver
 
-up to page 109 ex 4.11 exe 2
+up to page 135
 
 -
