@@ -22,6 +22,8 @@ Pip freeze > requirements.txt
 run the server
 (venv) python manage.py runserver
 
-up to page 135
+to migrate database:
+python manage.py makemigrations bands
+python manage.py migrate
 
--
+up to page 150 sec 6.5

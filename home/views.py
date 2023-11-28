@@ -1,6 +1,7 @@
 from django.shortcuts import HttpResponse, render
 from django.http import JsonResponse
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
 
 
 def credits(request):

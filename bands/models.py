@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Musician(models.Model):
@@ -58,3 +59,9 @@ class Band(models.Model):
         ordering = [
             "name",
         ]
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    musician_profiles = models.ManyToManyField(Musician, blank=True)
+    venues_controlled = models.ManyToManyField(Venue, blank=True)

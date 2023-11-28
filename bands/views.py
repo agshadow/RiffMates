@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from bands.models import Musician, Band, Venue
 from collections import namedtuple
+from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
 
 Page_tracker = namedtuple("Page_tracker", ["current", "total"])
@@ -91,3 +93,42 @@ def get_paginator(all_objects, request, items_per_page):
     page = paginator.page(page_num)
     page_tracker = Page_tracker(page_num, paginator.num_pages)
     return (page, page_tracker)
+
+
+@login_required
+def restricted_page(request):
+    data = {
+        "title": "Restricted Page",
+        "content": "<h1>You are logged in</h1>",
+    }
+
+    return render(request, "general.html", data)
+
+
+@login_required
+def musician_restricted(request, musician_id):
+    musician = get_object_or_404(Musician, id=musician_id)
+    profile = request.user.userprofile
+    allowed = False
+
+    if profile.musician_profiles.filter(id=musician_id).exists():
+        allowed = True
+    else:
+        # User is not this musician, check if they're a band-mate
+        musician_profiles = set(profile.musician_profiles.all())
+        for band in musician.band_set.all():
+            band_musicians = set(band.musicians.all())
+            if musician_profiles.intersection(band_musicians):
+                allowed = True
+                break
+    if not allowed:
+        raise Http404("Permission denied")
+    content = f"""
+        <h1>Musician Page: {musician.last_name}</h1>
+        <p> <a href="/accounts/logout/">Logout</a> </p>
+    """
+    data = {
+        "title": "Musician Restricted",
+        "content": content,
+    }
+    return render(request, "general.html", data)

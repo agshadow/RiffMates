@@ -7,5 +7,11 @@ urlpatterns = [
     path("musicians/", views.musicians, name="musicians"),
     path("bands/", views.bands, name="bands"),
     path("band/<int:band_id>/", views.band, name="band"),
+    path("restricted_page/", views.restricted_page, name="restricted_page"),
+    path(
+        "musician_restricted/<int:musician_id>/",
+        views.musician_restricted,
+        name="musician_restricted",
+    ),
     path("venues/", views.venues, name="venues"),
 ]
