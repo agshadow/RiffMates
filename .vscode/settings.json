@@ -3,4 +3,13 @@
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
     "python.formatting.provider": "none"
+    "files.associations": {
+        "**/*.html": "html",
+        "**/templates/*/*.html": "django-html",
+        "**/templates/*": "django-txt",
+        "**/requirements{/**,*}.{txt,in}": "pip-requirements"
+     },    
+     "[django-html]": {
+        "editor.defaultFormatter": "batisteo.vscode-django"
+     },
 }
