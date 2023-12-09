@@ -26,4 +26,4 @@ to migrate database:
 python manage.py makemigrations bands
 python manage.py migrate
 
-up to page 150 sec 6.5
+up to page 162 ch 7
