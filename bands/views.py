@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
-from bands.models import Musician, Band, Venue
+from bands.models import Musician, Band, Venue, UserProfile
 from collections import namedtuple
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 
 
@@ -42,6 +42,38 @@ def venues(request):
         "page_tracker": page_tracker,
     }
     return render(request, "venues.html", data)
+
+
+def venue_check(user):
+    print("in venue_check")
+    print(f"userid: {user.id}")
+    print(f"userid: {user.get_username()}")
+    try:
+        profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        print("exception user profile not exist")
+        return False
+    # print(f"id: {profile.id}")
+    # print(f"user_id: {profile.user_id}")
+    # print(profile.venues_controlled.exists())
+
+    try:
+        if profile.venues_controlled.exists():
+            print(f"Venue Check - User {profile.id} is allowed")
+            return True
+        else:
+            # User is not this musician, check if they're a band-mate
+            print(f"Venue Check - User {profile.id} not allowed")
+            return False
+
+    except UserProfile.DoesNotExist:
+        print("exception user profile not exist")
+        return False
+
+
+@user_passes_test(venue_check)
+def venues_restricted(request):
+    return venues(request)
 
 
 def bands(request):

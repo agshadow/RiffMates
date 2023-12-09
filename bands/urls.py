@@ -14,4 +14,5 @@ urlpatterns = [
         name="musician_restricted",
     ),
     path("venues/", views.venues, name="venues"),
+    path("venues_restricted/", views.venues_restricted, name="venues_restricted"),
 ]
