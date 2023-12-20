@@ -1,10 +1,11 @@
-from django.shortcuts import render
-
 # RiffMantes/content/views.py
 
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
-from content.forms import CommentForm
+from content.forms import CommentForm, SeekingAdForm
+from content.models import SeekingAd, MusicianBandChoice
 
 
 def comment(request):
@@ -48,3 +49,36 @@ def comment_accepted(request):
     }
 
     return render(request, "general.html", data)
+
+
+def list_ads(request):
+    data = {
+        "seeking_musician": SeekingAd.objects.filter(
+            seeking=MusicianBandChoice.MUSICIAN
+        ),
+        "seeking_band": SeekingAd.objects.filter(seeking=MusicianBandChoice.BAND),
+    }
+    print(data)
+    return render(request, "list_ads.html", data)
+
+
+@login_required
+def seeking_ad(request):
+    if request.method == "GET":
+        form = SeekingAdForm()
+
+    else:  # POST
+        form = SeekingAdForm(request.POST)
+
+        if form.is_valid():
+            ad = form.save(commit=False)
+            ad.owner = request.user
+            ad.save()
+
+            return redirect("list_ads")
+    # Was a GET or Form was not valid:
+    data = {
+        "form": form,
+    }
+
+    return render(request, "seeking_ad.html", data)
