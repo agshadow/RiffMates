@@ -3,7 +3,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from content.forms import CommentForm, SeekingAdForm
 from content.models import SeekingAd, MusicianBandChoice
 
@@ -63,12 +63,22 @@ def list_ads(request):
 
 
 @login_required
-def seeking_ad(request):
+def seeking_ad(request, ad_id=0):
+    print("inside seeking_ad")
     if request.method == "GET":
-        form = SeekingAdForm()
-
+        print("inside GET")
+        if ad_id == 0:
+            form = SeekingAdForm()
+        else:
+            ad = get_object_or_404(SeekingAd, id=ad_id, owner=request.user)
+            form = SeekingAdForm(instance=ad)
     else:  # POST
-        form = SeekingAdForm(request.POST)
+        print(f"inside POST - ad_id = {ad_id}")
+        if ad_id == 0:
+            form = SeekingAdForm(request.POST)
+        else:
+            ad = get_object_or_404(SeekingAd, id=ad_id, owner=request.user)
+            form = SeekingAdForm(request.Post, instance=ad)
 
         if form.is_valid():
             ad = form.save(commit=False)

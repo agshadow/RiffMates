@@ -73,3 +73,9 @@ def news_advanced(request):
     }
 
     return render(request, "news_advanced.html", data)
+
+
+def home(request):
+    render(
+        request,
+    )
