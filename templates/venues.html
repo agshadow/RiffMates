@@ -2,16 +2,33 @@
 {% extends "base.html" %} {% block title %} {{block.super}}: Venues Details
 {%endblock %} {% block content %}
 <h1 class="text-dark">Venues Details</h1>
+
+  {% if user.is_authenticated %}
+    <a href="{% url 'add_venue' %}">Add Venue</a>
+  {% endif %}
+
 <table style="width:100%" >
   <tr >
     <th>Venue Name</th>
+    <th>Venue Description</th>
     <th>Room</th>
+    <th>Image</th>
   </tr>
   {% for venue in venues %}
-  <tr style='background-color:{% cycle 'LightGray' 'SeaShell' %}' >
-    <td>{{venue.name}}</a></td>
-    <td>{% for room in venue.room_set.all %}{{room.name}}<BR>{%empty%} - <BR>{% endfor%}</td>
-  </tr>
+    <tr style='background-color:{% cycle 'LightGray' 'SeaShell' %}' >
+      {% if venue.controlled %}
+        <td><a href="{% url 'edit_venue' venue.id %}">{{venue.name}}</a></td>
+      {% else %}
+        <td>{{venue.name}}</td>
+      {% endif %}
+      <td>{{ venue.description}}</td>
+      <td>{% for room in venue.room_set.all %}{{room.name}}<BR>{%empty%} - <BR>{% endfor%}</td>
+      <td>
+        {% if venue.picture %}
+          <img src="{{venue.picture.url}}" height = "50"/>
+        {% endif %}
+      </td>
+    </tr>
   {% empty %}
   <tr style='background-color:{% cycle 'LightGreen' 'SeaShell' %}' >
     <td>No Venues</td><td></td><td>}</td>

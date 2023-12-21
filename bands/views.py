@@ -31,7 +31,16 @@ def band(request, band_id):
 
 def venues(request):
     all_venues = Venue.objects.all().order_by("name")
+    for venue in all_venues:
+        # Mark the venue is "controlled" if the logged in user is
+        # associated with the venue
+        profile = request.user.userprofile
+        print(f"venue name: {venue.name}")
 
+        # print(f"venue conrolled by:  {venue.controlled}")
+        venue.controlled = profile.venues_controlled.filter(id=venue.id).exists()
+
+        print(f"venue conrolled by:  {venue.controlled}")
     # set up paginator
     page_data = get_paginator(all_venues, request, 3)
     (page, page_tracker) = page_data
@@ -171,8 +180,8 @@ def musician_restricted(request, musician_id):
 def edit_venue(request, venue_id=0):
     if venue_id != 0:
         venue = get_object_or_404(Venue, id=venue_id)
-    if not request.user.userprofile.venues_controlled.filter(id=venue_id).exists():
-        raise Http404("Can only edit controlled venues")
+        if not request.user.userprofile.venues_controlled.filter(id=venue_id).exists():
+            raise Http404("Can only edit controlled venues")
 
     if request.method == "GET":
         if venue_id == 0:
