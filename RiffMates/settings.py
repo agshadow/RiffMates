@@ -130,6 +130,9 @@ STATICFILES_DIRS = (BASE_DIR / "static",)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Account Management
-LOGIN_REDIRECT_URL = "/bands/bands/"
-LOGOUT_REDIRECT_URL = "/bands/bands/"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+MEDIA_ROOT = BASE_DIR.parent / "outside/RiffMates/uploads"
+MEDIA_URL = "/media/"

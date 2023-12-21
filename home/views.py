@@ -40,16 +40,6 @@ def news(request):
     return render(request, "news2.html", data)
 
 
-def home(request):
-    data = {
-        "news": [
-            "RiffMates now has a news page!",
-            "RiffMates has its first web page",
-        ],
-    }
-    return render(request, "home.html", data)
-
-
 def news_advanced(request):
     data = {
         "news": [
@@ -76,6 +66,4 @@ def news_advanced(request):
 
 
 def home(request):
-    render(
-        request,
-    )
+    return render(request, "home.html")

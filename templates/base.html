@@ -20,17 +20,37 @@
       </style>
   </head>
   <body>
-    <table>
+    <table width="100%">
       <TR>
-        <TD><a href={% url 'home' %}>Home</a></TD>
-        <TD><a href={% url 'musicians' %}>Musicians</a></TD>
-        <TD><a href={% url 'bands' %}>Bands</a></TD>
-        <TD><a href={% url 'venues' %}>Venues</a></TD>
-        <TD><a href={% url 'news_advanced' %}>News</a></TD>
+        <TD align="center"><a href={% url 'home' %}>Home</a></TD>
+        <TD align="center"><a href={% url 'musicians' %}>Musicians</a></TD>
+        <TD align="center"><a href={% url 'bands' %}>Bands</a></TD>
+        <TD align="center"><a href={% url 'venues' %}>Venues</a></TD>
+        <TD align="center"><a href={% url 'news_advanced' %}>News</a></TD>
+        <TD align="center">
+          {% if user.is_authenticated %}
+            <H3>{{user.username}}</h3>
+          {% endif %}</TD>
+        <TD align="center">
+          {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}">Logout</a>
+          {% else %}
+            <a href="{% url 'login' %}">Login</a>
+          {% endif %}</TD>
       </TR>
     </table>
     <HR>
+   <p style="float: right;">
+      {% if user.is_authenticated %}
+        Hello, {{user.username}}! &nbsp;&nbsp;
+      {% endif %}
 
+    <a href="{% url 'home' %}">Home</a> &nbsp;
+    {% if user.is_authenticated %}
+      <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+      <a href="{% url 'login' %}">Login</a>
+    {% endif %}
       {% block content %} {% endblock content %}
     </div>
   </body>
