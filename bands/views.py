@@ -1,9 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from bands.models import Musician, Band, Venue, UserProfile
+from bands.models import Musician, Band, Venue, UserProfile, Room
 from collections import namedtuple
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
+from bands.forms import VenueForm
 
 
 Page_tracker = namedtuple("Page_tracker", ["current", "total"])
@@ -164,3 +165,36 @@ def musician_restricted(request, musician_id):
         "content": content,
     }
     return render(request, "general.html", data)
+
+
+@login_required
+def edit_venue(request, venue_id=0):
+    if venue_id != 0:
+        venue = get_object_or_404(Venue, id=venue_id)
+    if not request.user.userprofile.venues_controlled.filter(id=venue_id).exists():
+        raise Http404("Can only edit controlled venues")
+
+    if request.method == "GET":
+        if venue_id == 0:
+            form = VenueForm()
+        else:
+            form = VenueForm(instance=venue)
+
+    else:  # POST
+        if venue_id == 0:
+            venue = Venue.objects.create()
+
+        form = VenueForm(request.POST, request.FILES, instance=venue)
+
+        if form.is_valid():
+            venue = form.save()
+
+            # Add the venue to the user's profile
+            request.user.userprofile.venues_controlled.add(venue)
+            return redirect("venues")
+    # Was a GET or Form was not valid
+    data = {
+        "form": form,
+    }
+
+    return render(request, "edit_venue.html", data)

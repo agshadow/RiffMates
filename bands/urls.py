@@ -15,4 +15,6 @@ urlpatterns = [
     ),
     path("venues/", views.venues, name="venues"),
     path("venues_restricted/", views.venues_restricted, name="venues_restricted"),
+    path("add_venue/", views.edit_venue, name="add_venue"),
+    path("edit_venue/<int:ad_id>/", views.edit_venue, name="edit_venue"),
 ]

@@ -26,7 +26,7 @@ to migrate database:
 python manage.py makemigrations bands
 python manage.py migrate
 
-up to page 196 7.4.2
-
 uses pillow library
 pip install pillow
+
+up to page 202 7.19
