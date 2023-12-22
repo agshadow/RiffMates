@@ -4,7 +4,7 @@ from bands.models import Musician, Band, Venue, UserProfile, Room
 from collections import namedtuple
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
-from bands.forms import VenueForm
+from bands.forms import VenueForm, MusicianForm
 
 
 Page_tracker = namedtuple("Page_tracker", ["current", "total"])
@@ -104,7 +104,16 @@ def bands(request):
 
 def musicians(request):
     all_musicians = Musician.objects.all().order_by("last_name")
+    for musician in all_musicians:
+        # Mark the venue is "controlled" if the logged in user is
+        # associated with the venue
+        profile = request.user.userprofile
+        print(f"venue name: {musician.first_name} {musician.last_name}")
+        musician.belongs_to_user = profile.musician_profiles.filter(
+            id=musician.id
+        ).exists()
 
+        print(f"venue conrolled by:  {musician.belongs_to_user}")
     # set up paginator
     page_data = get_paginator(all_musicians, request, 3)
     (page, page_tracker) = page_data
@@ -207,3 +216,47 @@ def edit_venue(request, venue_id=0):
     }
 
     return render(request, "edit_venue.html", data)
+
+
+@login_required
+def edit_musician(request, musician_id=0):
+    print(f"============= inside edit_musician")
+    print(f"============= musician id = {musician_id}")
+    if musician_id != 0:
+        print(f"get musician_id: {musician_id} profile")
+        musician = get_object_or_404(Musician, id=musician_id)
+        print(f"retrieved profile:")
+        print(musician)
+        if not request.user.userprofile.musician_profiles.filter(
+            id=musician_id
+        ).exists():
+            raise Http404("Can only edit your own Musician Profile")
+
+    if request.method == "GET":
+        print(f"==== inside GET")
+        if musician_id == 0:
+            form = MusicianForm()
+        else:
+            form = MusicianForm(instance=musician)
+
+    else:  # POST
+        print(f"==== inside POST")
+        if musician_id == 0:
+            print(f"==== musician id is 0 : {musician_id}")
+            # musician = Musician.objects.create()
+            musician = Musician()
+            print(f"=====musician object created:")
+            print(musician)
+        form = MusicianForm(request.POST, request.FILES, instance=musician)
+        print(f"===============dob: {musician.birth}")
+        if form.is_valid():
+            musician = form.save()
+
+            # Add the musician to the user's profile, if it exists it wont duplicate
+            request.user.userprofile.musician_profiles.add(musician)
+            return redirect("musicians")
+    # Was a GET or Form was not valid
+    data = {
+        "form": form,
+    }
+    return render(request, "edit_musician.html", data)

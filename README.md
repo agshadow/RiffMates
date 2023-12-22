@@ -29,4 +29,4 @@ python manage.py migrate
 uses pillow library
 pip install pillow
 
-up to page 206 ex 7.5
+up to page 206 ex 7.5 ex 2
