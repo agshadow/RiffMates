@@ -70,15 +70,23 @@ def seeking_ad(request, ad_id=0):
         if ad_id == 0:
             form = SeekingAdForm()
         else:
-            ad = get_object_or_404(SeekingAd, id=ad_id, owner=request.user)
+            if request.user.is_staff:
+                print(f"this user is a superuser:  {request.user.username}")
+                ad = get_object_or_404(SeekingAd, id=ad_id)
+            else:
+                print(f"this is not a superuser: {request.user.username}")
+                ad = get_object_or_404(SeekingAd, id=ad_id, owner=request.user)
             form = SeekingAdForm(instance=ad)
     else:  # POST
         print(f"inside POST - ad_id = {ad_id}")
         if ad_id == 0:
             form = SeekingAdForm(request.POST)
         else:
-            ad = get_object_or_404(SeekingAd, id=ad_id, owner=request.user)
-            form = SeekingAdForm(request.Post, instance=ad)
+            if request.user.is_staff:
+                ad = get_object_or_404(SeekingAd, id=ad_id)
+            else:
+                ad = get_object_or_404(SeekingAd, id=ad_id, owner=request.user)
+            form = SeekingAdForm(request.POST, instance=ad)
 
         if form.is_valid():
             ad = form.save(commit=False)

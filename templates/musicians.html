@@ -28,7 +28,7 @@
           {% endif %}
       </td>
       <td>
-      {% if item.belongs_to_user %}
+      {% if item.belongs_to_user or request.user.is_staff %}
         <a href="{% url 'edit_musician' item.id %}">edit</a>
       {% endif %}
       </td>

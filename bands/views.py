@@ -108,12 +108,12 @@ def musicians(request):
         # Mark the venue is "controlled" if the logged in user is
         # associated with the venue
         profile = request.user.userprofile
-        print(f"venue name: {musician.first_name} {musician.last_name}")
+        print(f"musician name: {musician.first_name} {musician.last_name}")
         musician.belongs_to_user = profile.musician_profiles.filter(
             id=musician.id
         ).exists()
 
-        print(f"venue conrolled by:  {musician.belongs_to_user}")
+        print(f"musician conrolled by:  {musician.belongs_to_user}")
     # set up paginator
     page_data = get_paginator(all_musicians, request, 3)
     (page, page_tracker) = page_data
@@ -227,10 +227,11 @@ def edit_musician(request, musician_id=0):
         musician = get_object_or_404(Musician, id=musician_id)
         print(f"retrieved profile:")
         print(musician)
-        if not request.user.userprofile.musician_profiles.filter(
-            id=musician_id
-        ).exists():
-            raise Http404("Can only edit your own Musician Profile")
+        if not request.user.is_staff:
+            if not request.user.userprofile.musician_profiles.filter(
+                id=musician_id
+            ).exists():
+                raise Http404("Can only edit your own Musician Profile")
 
     if request.method == "GET":
         print(f"==== inside GET")

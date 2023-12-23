@@ -14,7 +14,7 @@
     {{ad.date}} &mdash;
     {{ad.musician.first_name}} {{ad.musician.last_name}}
     
-      {% if ad.owner == request.user %}
+      {% if ad.owner == request.user or request.user.is_superuser %}
         <a href="{% url 'edit_seeking_ad' ad.id %}">Edit</a>
       {% endif %}
     <br/>
@@ -30,7 +30,7 @@
     <p>
     {{ad.date}} &mdash; {{ad.band.name}}
     
-      {% if ad.owner == request.user %}
+      {% if ad.owner == request.user  or request.user.is_superuser %}
         <a href="{% url 'edit_seeking_ad' ad.id %}">Edit</a>
       {% endif %}
     <br/>
