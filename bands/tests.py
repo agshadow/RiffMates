@@ -40,6 +40,21 @@ class TestBands(TestCase):
             self.owner.userprofile.venues_controlled.filter(id=venue.id).exists()
         )
 
+        # now edit that Venue
+        url = f"/bands/edit_venue/{venue.id}/"
+        data["name"] = "Edited Name"
+        response = self.client.post(url, data)
+
+        self.assertEqual(302, response.status_code)
+        venue = Venue.objects.first()
+        self.assertEqual(data["name"], venue.name)
+
+        # Test with another user:
+        # Verify that a non-owner cant edit
+        self.client.login(username="member", password=self.PASSWORD)
+        response = self.client.post(url, data)
+        self.assertEqual(404, response.status_code)
+
     def test_musician_view(self):
         url = f"/bands/musician/{self.musician.id}/"
 
